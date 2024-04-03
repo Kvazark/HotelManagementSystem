@@ -1,4 +1,4 @@
-﻿namespace RestaurantManagementSystem.Common;
+﻿namespace HotelManagementSystem.Common;
 
 public abstract class Entity<T> : IEntity<T>
 {

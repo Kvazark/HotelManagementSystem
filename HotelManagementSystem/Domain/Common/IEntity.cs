@@ -1,9 +1,5 @@
-﻿namespace RestaurantManagementSystem.Common;
+﻿namespace HotelManagementSystem.Common;
 
-public interface Interfaces
-{
-    
-}
 public interface IAggregate<T> : IAggregate, IEntity<T>
 {
 }

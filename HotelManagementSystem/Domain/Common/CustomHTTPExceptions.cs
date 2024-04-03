@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace RestaurantManagementSystem.Aggregates;
+namespace HotelManagementSystem.Aggregates;
 
 
 public class BadRequestException : CustomHTTPException

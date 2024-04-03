@@ -1,4 +1,4 @@
-﻿namespace RestaurantManagementSystem.Aggregates;
+﻿namespace HotelManagementSystem.Aggregates;
 
 
 public class InvalidHotelIdException : BadRequestException
@@ -25,13 +25,6 @@ public class InvalidAddressException : BadRequestException
 public class InvalidHotelStarRatingException : BadRequestException
 {
     public InvalidHotelStarRatingException() : base("The value of the number of stars should be from 1 to 5.")
-    {
-    }
-}
-
-public class InvalidRoomQuantityException : BadRequestException
-{
-    public InvalidRoomQuantityException() : base("The number of numbers cannot be negative or equal to zero.")
     {
     }
 }

@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices.JavaScript;
-
-namespace RestaurantManagementSystem.Aggregates;
+﻿namespace HotelManagementSystem.Aggregates;
 
 /// <summary>
 /// Common
@@ -87,22 +85,6 @@ public class HotelStarRating
     }
 }
 
-public class RoomQuantity
-{
-    public RoomCategory Category { get; }
-    public int Quantity { get; }
-
-    private RoomQuantity(RoomCategory category, int quantity)
-    {
-        Category = category;
-        Quantity = quantity;
-    }
-    public static RoomQuantity Of(RoomCategory category, int quantity)
-    {
-        if (quantity <= 0) throw new InvalidRoomQuantityException();
-        return new RoomQuantity(category, quantity);
-    }
-}
 
 
 
