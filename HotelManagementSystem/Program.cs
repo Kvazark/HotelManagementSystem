@@ -31,18 +31,11 @@ app.MapPost("api/addbooking", async (CreateBookingDto createBookingDto,IBookingS
     return Results.Created($"api/addbooking/{newBooking.Id}", newBooking);
 });
 
-app.MapPost("api/publications", async (PublicationInputDto publication, IUserService userService) =>
+app.MapPost("api/getbookingById", async (Guid bookingId, IBookingService bookingService) =>
 {
-    var newPublication = await userService.AddPublication(publication.TextContent, publication.MediaContent, publication.UserGuidId);
+    var booking = await bookingService.GetBookingById(bookingId);
 
-    return Results.Created($"api/publications/{newPublication.Id}",newPublication);
-});
-
-app.MapPost("api/getbooking", async (Guid curBookingId, Guid userId, IBookingService bookingService) =>
-{
-    var listPublication = await userService.GetListPublications(curUserId, userId);
-
-    return Results.Created($"api/getpublications/", listPublication);
+    // return Results.Created($"api/getbookingbyid/{booking.BookingId}", booking);
 });
 
 app.Run();

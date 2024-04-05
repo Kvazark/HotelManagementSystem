@@ -8,5 +8,5 @@ public interface IBookingService
 {
     public Task<Booking> AddBooking(DateTime createBookingDto, DateTime departureDate, int numberOfGuests);
     
-    public Task<BookingDto?> GetBookingById(string bookingId);
+    public Task<BookingDto?> GetBookingById(Guid bookingId);
 }

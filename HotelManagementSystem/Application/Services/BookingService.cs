@@ -73,7 +73,7 @@ public class BookingService : IBookingService
         return await AddBooking(arrivalDate, departureDate, numberOfGuests);
     }
 
-    public Task<BookingDto?> GetBookingById(string bookingId)
+    public Task<BookingDto?> GetBookingById(Guid bookingId)
     {
         throw new NotImplementedException();
     }
