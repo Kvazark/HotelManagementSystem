@@ -14,25 +14,24 @@ public class BookingService : IBookingService
         _context = context;
     }
     
-    public async Task<Booking> ToBook(CreateBookingDto createBookingDto)
+    public async Task<Booking> AddBooking(DateTime arrivalDate, DateTime departureDate, int numberOfGuests)
     {
-        var reservationDates = new ReservationDates(createBookingDto.ArrivalDate, createBookingDto.DepartureDate);
-        var numberofGuests = new NumberOfGuests(createBookingDto.NumberOfGuests);
-       
+        var reservationDates = new ReservationDates(arrivalDate, departureDate);
+
         var hotels = await _context.Hotels.ToListAsync();
 
-        // Перемешивание порядка отелей случайным образом
+        // Перемешивание 
         hotels.Shuffle();
         
         foreach (var hotel in hotels)
         {
             var rooms = await _context.Rooms
-                .Where(r => r.HotelId == hotel.Id && r.Capacity == createBookingDto.NumberOfGuests)
+                .Where(r => r.HotelId == hotel.Id && r.Capacity == numberOfGuests)
                 .ToListAsync();
 
             if (rooms.Any())
             {
-                // Перемешивание порядка комнат случайным образом
+                // Перемешивание 
                 rooms.Shuffle();
 
                 // Проверка доступности комнат на выбранные даты
@@ -54,8 +53,8 @@ public class BookingService : IBookingService
     
                         decimal bookingPrice = basePrice * ( discount / 100);
                         
-                        var booking = Booking.Create(BookingId.Of(Guid.NewGuid()), ReservationDates.Of(createBookingDto.ArrivalDate, createBookingDto.DepartureDate), 
-                            NumberOfGuests.Of(createBookingDto.NumberOfGuests), hotel, room, Discount.Of(discount), BookingPrice.Of(bookingPrice));
+                        var booking = Booking.Create(BookingId.Of(Guid.NewGuid()), ReservationDates.Of(arrivalDate, departureDate), 
+                            NumberOfGuests.Of(numberOfGuests), hotel, room, Discount.Of(discount), BookingPrice.Of(bookingPrice));
     
                         await _context.Bookings.AddAsync(booking);
                         await _context.SaveChangesAsync();
@@ -63,7 +62,7 @@ public class BookingService : IBookingService
                         return booking;
                     }
                 }
-
+                
                 if (isAnyRoomAvailable)
                 {
                     // Если есть доступные комнаты в отеле, но все заняты на выбранные даты, переходим к следующему отелю
@@ -71,7 +70,7 @@ public class BookingService : IBookingService
                 }
             }
         } 
-        return await ToBook(createBookingDto);
+        return await AddBooking(arrivalDate, departureDate, numberOfGuests);
     }
 
     public Task<BookingDto?> GetBookingById(string bookingId)

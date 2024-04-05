@@ -6,7 +6,7 @@ namespace HotelManagementSystem.DomainServices;
 
 public interface IBookingService
 {
-    public Task<Booking> ToBook(CreateBookingDto createBookingDto);
+    public Task<Booking> AddBooking(DateTime createBookingDto, DateTime departureDate, int numberOfGuests);
     
     public Task<BookingDto?> GetBookingById(string bookingId);
 }

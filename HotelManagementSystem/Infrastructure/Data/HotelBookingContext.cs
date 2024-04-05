@@ -54,7 +54,16 @@ public class HotelBookingContext  : DbContext
             {
                 a.Property(p => p.Value)
                     .HasColumnName(nameof(Booking.NumberOfGuests))
-                    .HasMaxLength(50)
+                    .IsRequired();
+            }
+        );
+        
+        modelBuilder.Entity<Booking>().OwnsOne(
+            x => x.Hotel,
+            a =>
+            {
+                a.Property(p => p.Value)
+                    .HasColumnName(nameof(Booking.Hotel))
                     .IsRequired();
             }
         );
