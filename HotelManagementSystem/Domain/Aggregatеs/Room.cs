@@ -10,17 +10,15 @@ public class Room  : Aggregate<RoomId>
     public Capacity Capacity { get; private set; } = default!;
     
     public RoomPrice RoomPrice { get; private set; } = default!;
-    public Hotel Hotel { get; private set; } = default!;
-    
-    public virtual ICollection<Booking> Bookings { get; set; }
-    
-    
-    public static Room Create(RoomId id, Hotel hotelId, NumberRoom numberRoom, RoomCategory roomCategory, Capacity capacity, RoomPrice roomPrice, bool isDeleted = false)
+    public HotelId HotelId { get; private set; } = default!;
+
+
+    public static Room Create(RoomId id, HotelId hotelId, NumberRoom numberRoom, RoomCategory roomCategory, Capacity capacity, RoomPrice roomPrice, bool isDeleted = false)
     {
         var room = new Room
         {
             Id = id,
-            Hotel = hotelId,
+            HotelId = hotelId,
             NumberRoom = numberRoom,
             Capacity = capacity,
             RoomPrice = roomPrice

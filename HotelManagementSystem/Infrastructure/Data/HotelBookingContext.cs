@@ -59,22 +59,22 @@ public class HotelBookingContext  : DbContext
         );
         
         modelBuilder.Entity<Booking>().OwnsOne(
-            x => x.Hotel,
+            x => x.HotelId,
             a =>
             {
                 a.Property(p => p.Value)
-                    .HasColumnName(nameof(Booking.Hotel))
+                    .HasColumnName(nameof(Booking.HotelId))
                     .IsRequired();
             }
         );
         
-        modelBuilder.Entity<Booking>().HasOne(b => b.Hotel)
+        modelBuilder.Entity<Booking>().HasOne(b => b.HotelId)
             .WithMany()
             .HasForeignKey(b => b.HotelId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<Booking>().HasOne(b => b.Room)
+        modelBuilder.Entity<Booking>().HasOne(b => b.RoomId)
             .WithMany()
             .HasForeignKey(b => b.RoomId)
             .IsRequired()
