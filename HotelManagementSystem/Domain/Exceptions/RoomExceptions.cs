@@ -28,3 +28,11 @@ public class InvalidRoomPriceException : BadRequestException
     {
     }
 }
+
+public class InvalidRoomCategoryException : BadRequestException
+{
+    public InvalidRoomCategoryException() : base("There is no such category.")
+    {
+    }
+}
+

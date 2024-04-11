@@ -1,4 +1,5 @@
 ﻿using HotelManagementSystem.Aggregates;
+using HotelManagementSystem.Domain.Constants;
 
 
 public class RoomId
@@ -76,5 +77,50 @@ public class RoomPrice
     public static implicit operator decimal (RoomPrice roomPrice)
     {
         return roomPrice.Value;
+    }
+    public static decimal GetCoefficientByCategory(string category)
+    {
+        RoomCategories roomCategory;
+        decimal coefficient = 1;
+
+        if (Enum.TryParse(category, out roomCategory))
+        {
+            switch (roomCategory)
+            {
+                case RoomCategories.Standard:
+                    return 1.1m;
+                case RoomCategories.JuniorSuite:
+                    return 1.2m;
+                case RoomCategories.Deluxe:
+                    return 1.3m;
+                case RoomCategories.Suite:
+                    return 1.4m;
+                default:
+                    break;
+            }
+        }
+        throw new InvalidRoomCategoryException();
+    }
+}
+
+public class RoomCategory
+{
+    public RoomCategories  Value { get; }
+
+    private RoomCategory(RoomCategories  value)
+    {
+        Value = value;
+    }
+    public static RoomCategory Of(string  value)
+    {
+        try 
+        {
+            var category = (RoomCategories)Enum.Parse(typeof(RoomCategories), value);
+            return new RoomCategory(category);
+        }
+        catch (ArgumentException)
+        {
+            throw new InvalidRoomCategoryException();
+        }
     }
 }

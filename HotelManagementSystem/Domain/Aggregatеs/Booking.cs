@@ -28,24 +28,7 @@ public class Booking : Aggregate<BookingId>
         };
         return booking;
     }
-    
-    private static bool IsRoomAvailable(Room room, ReservationDates reservationDates, List<Booking> bookings)
-    {
-        foreach (var booking in bookings)
-        {
-            var isBookingsOverlap = reservationDates.IsOverlapping(booking.ReservationDates.ArrivalDate, booking.ReservationDates.DepartureDate);
-            var isCurrentBookingContained = reservationDates.IsContained(booking.ReservationDates.ArrivalDate, booking.ReservationDates.DepartureDate);
-            var isRoomAlreadyBooked = booking.RoomId == room.Id;
 
-            if ((isBookingsOverlap || isCurrentBookingContained) && isRoomAlreadyBooked)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-    
     public static async Task<Booking> AddBooking(List<Hotel> listHotels, List<Booking> bookings, DateTime arrivalDate, DateTime departureDate, int numberOfGuests)
     {
         var reservationDates = new ReservationDates(arrivalDate, departureDate);

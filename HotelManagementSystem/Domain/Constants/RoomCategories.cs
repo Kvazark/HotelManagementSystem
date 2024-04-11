@@ -1,5 +1,5 @@
 ﻿namespace HotelManagementSystem.Domain.Constants;
-public enum RoomCategory
+public enum RoomCategories
 {
     Standard,
     JuniorSuite,

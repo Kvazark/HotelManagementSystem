@@ -25,4 +25,12 @@ public class Room  : Aggregate<RoomId>
         };
         return room;
     }
+    
+    public static async Task<Room> CreateRoom(string numberRoom, string roomCategory, int capacity, decimal baseRoomPrice, Guid hotelId)
+    {
+        var roomPrice = baseRoomPrice * RoomPrice.GetCoefficientByCategory(roomCategory);
+        var room = Create(RoomId.Of(Guid.NewGuid()), HotelId.Of(hotelId), NumberRoom.Of(numberRoom), 
+            RoomCategory.Of(roomCategory), Capacity.Of(capacity), RoomPrice.Of(roomPrice));
+        return room;
+    }
 }

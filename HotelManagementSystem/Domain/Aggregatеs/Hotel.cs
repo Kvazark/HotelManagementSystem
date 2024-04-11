@@ -20,8 +20,20 @@ public class Hotel : Aggregate<HotelId>
         };
         return hotel;
     }
-    
-    // public static Hotel AddedRoom(RoomId roomId,)
+
+    public static async Task<Hotel> AddHotel(string name, string address)
+    {
+        var hotel = Hotel.Create(HotelId.Of(Guid.NewGuid()), Name.Of(name),
+            Address.Of(address), HotelStarRating.Of(1));
+        return hotel;
+    }
+
+    public static Task<Room> AddRoom(Hotel hotel, string numberRoom, string roomCategory, int capacity, decimal baseRoomPrice)
+    {
+        var room = Room.CreateRoom(numberRoom, roomCategory, capacity, baseRoomPrice, hotel.Id);
+        Rooms.Add(room);
+        return room;
+    }
 }
 
 
