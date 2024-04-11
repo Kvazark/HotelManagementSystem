@@ -29,12 +29,14 @@ public class HotelService : IHotelService
     {
         var hotel = _context.Hotels
             .FirstOrDefault(h => h.Id == hotelId);
-        var newRoom = Hotel.AddRoom( hotel, numberRoom, roomCategory, capacity, baseRoomPrice);
-        await _context.Add(newRoom);
-        hotel.AddRoom(room);
+        if (hotel != null)
+        {
+            var newRoom = Hotel.AddRoom( hotel, numberRoom, roomCategory, capacity, baseRoomPrice);
+            _context.Add(newRoom);
 
-        // Сохранить изменения в базе данных
-        await _context.SaveChanges();
+            await _context.SaveChangesAsync();
+        }
+        
         return hotel;
 
     }

@@ -28,10 +28,10 @@ public class Hotel : Aggregate<HotelId>
         return hotel;
     }
 
-    public static Task<Room> AddRoom(Hotel hotel, string numberRoom, string roomCategory, int capacity, decimal baseRoomPrice)
+    public static Hotel AddRoom(Hotel hotel, string numberRoom, string roomCategory, int capacity, decimal baseRoomPrice)
     {
         var room = Room.CreateRoom(numberRoom, roomCategory, capacity, baseRoomPrice, hotel.Id);
-        Rooms.Add(room);
+        hotel.Rooms.Add(room);
         return room;
     }
 }
