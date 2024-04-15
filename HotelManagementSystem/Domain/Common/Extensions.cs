@@ -1,4 +1,4 @@
-﻿namespace HotelManagementSystem.DomainServices;
+﻿namespace HotelManagementSystem.Domain.Common;
 
 public static class Extensions
 {

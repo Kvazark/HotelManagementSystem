@@ -1,15 +1,18 @@
 ﻿using HotelManagementSystem.Aggregates;
 using HotelManagementSystem.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagementSystem.DomainServices;
 
 public class HotelService : IHotelService
 {
     private readonly HotelBookingContext _context;
+    private readonly IRoomService _roomService;
 
-    public HotelService(HotelBookingContext context)
+    public HotelService(HotelBookingContext context, IRoomService roomService)
     {
         _context = context;
+        _roomService = roomService;
     }
 
     public async Task<Hotel> CreateHotel(string name, string address)
@@ -25,24 +28,29 @@ public class HotelService : IHotelService
         return await newHotel;
     }
 
-    public async Task<Hotel> AddRoom(Guid hotelId, string numberRoom, string roomCategory, int capacity, decimal baseRoomPrice)
+    public async Task<Hotel?> AddRoom(Guid hotelId, string numberRoom, string roomCategory, int capacity, decimal baseRoomPrice)
     {
-        var hotel = _context.Hotels
-            .FirstOrDefault(h => h.Id == hotelId);
+        var hotel = await _context.Hotels
+            .Include(h => h.Rooms) 
+            .FirstOrDefaultAsync(h => h.Id == hotelId);
+        
         if (hotel != null)
         {
-            var newRoom = Hotel.AddRoom( hotel, numberRoom, roomCategory, capacity, baseRoomPrice);
-            _context.Add(newRoom);
-
+            var newRoom = await _roomService.CreateRoom(numberRoom, roomCategory, capacity, baseRoomPrice, hotelId);
+            if (newRoom != null)
+            {
+                await hotel.AddRoom(newRoom, hotel);
+            }
+            _context.Update(hotel);
             await _context.SaveChangesAsync();
         }
         
         return hotel;
-
     }
 
-    public Task<Hotel?> GetHotelById(Guid hotelId)
+    public async Task<Hotel?> GetHotelById(Guid hotelId)
     {
-        throw new NotImplementedException();
+        var hotel = await _context.Hotels.FirstOrDefaultAsync(h => h.Id == hotelId);
+        return hotel;
     }
 }

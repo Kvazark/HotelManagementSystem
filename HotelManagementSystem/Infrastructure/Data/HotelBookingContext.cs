@@ -27,9 +27,17 @@ public class HotelBookingContext  : DbContext
         
         modelBuilder.Entity<Booking>().ToTable(nameof(Booking));
 
-        modelBuilder.Entity<Booking>().HasKey(r => r.Id);
+      
         modelBuilder.Entity<Booking>().Property(r => r.Id).ValueGeneratedNever()
             .HasConversion<Guid>(bookingId => bookingId.Value, dbId => BookingId.Of(dbId));
+
+        modelBuilder.Entity<Hotel>().HasKey(r => r.Id);
+        modelBuilder.Entity<Hotel>().ToTable(nameof(Booking));
+        modelBuilder.Entity<Hotel>().Property(r => r.Id).ValueGeneratedNever();
+        
+        modelBuilder.Entity<Room>().HasKey(p => p.Id);
+        modelBuilder.Entity<Room>().ToTable(nameof(Booking));
+        modelBuilder.Entity<Room>().Property(r => r.Id).ValueGeneratedNever();
        
         modelBuilder.Entity<Booking>().OwnsOne(x => x.ReservationDates,
             a =>
@@ -99,14 +107,6 @@ public class HotelBookingContext  : DbContext
             }
         );
 
-        modelBuilder.Entity<Hotel>().HasKey(p => p.Id);
-        
-        modelBuilder.Entity<Hotel>().ToTable(nameof(Hotel));
-
-        modelBuilder.Entity<Hotel>().HasKey(r => r.Id);
-        modelBuilder.Entity<Hotel>().Property(r => r.Id).ValueGeneratedNever()
-            .HasConversion<Guid>(hotelId => hotelId.Value, dbId => HotelId.Of(dbId));
-       
         modelBuilder.Entity<Hotel>().OwnsOne(
             x => x.Name,
             a =>
@@ -138,61 +138,63 @@ public class HotelBookingContext  : DbContext
                     .IsRequired();
             }
         );
-        // modelBuilder.Entity<Hotel>().OwnsOne(
-        //     x => x.Rooms,
-        //     a =>
-        //     {
-        //         a.Property(p => p.Value)
-        //             .HasColumnName(nameof(Hotel.Rooms))
-        //             .IsRequired();
-        //     }
-        // );
+        modelBuilder.Entity<Hotel>() .HasMany(h => h.Rooms)
+            .WithOne()
+            .HasForeignKey(r => r.HotelId);
+        
+        
+        modelBuilder.Entity<Room>()
+            .OwnsOne(
+                r => r.NumberRoom,
+                nr =>
+                {
+                    nr.Property(p => p.Value)
+                        .HasColumnName(nameof(Room.NumberRoom))
+                        .IsRequired();
+                }
+            );
+
+        modelBuilder.Entity<Room>()
+            .OwnsOne(
+                r => r.RoomCategory,
+                rc =>
+                {
+                    rc.Property(p => p.Value)
+                        .HasColumnName(nameof(Room.RoomCategory))
+                        .IsRequired();
+                }
+            );
+
+        modelBuilder.Entity<Room>()
+            .OwnsOne(
+                r => r.Capacity,
+                c =>
+                {
+                    c.Property(p => p.Value)
+                        .HasColumnName(nameof(Room.Capacity))
+                        .IsRequired();
+                }
+            );
+
+        modelBuilder.Entity<Room>()
+            .OwnsOne(
+                r => r.RoomPrice,
+                rp =>
+                {
+                    rp.Property(p => p.Value)
+                        .HasColumnName(nameof(Room.RoomPrice))
+                        .IsRequired();
+                }
+            );
+
+        modelBuilder.Entity<Room>()
+            .Property(r => r.HotelId)
+            .HasColumnName(nameof(Room.HotelId))
+            .IsRequired();
+
+        modelBuilder.Entity<Room>()
+            .HasOne<Hotel>() 
+            .WithMany(h => h.Rooms)
+            .HasForeignKey(r => r.HotelId);
     }
 }
-// protected override void OnModelCreating(ModelBuilder modelBuilder)
-//     {
-//         base.OnModelCreating(modelBuilder);
-//
-//         modelBuilder.Entity<User>().HasKey(k => k.Id);
-//
-//         modelBuilder.Entity<User>().ToTable(nameof(User));
-//
-//         modelBuilder.Entity<User>().Property(r => r.Id).ValueGeneratedNever();
-//         modelBuilder.Entity<Publication>().Property(r => r.Id).ValueGeneratedNever();
-//
-//         modelBuilder.Entity<User>().OwnsOne(x => x.UserName,
-//             a =>
-//             {
-//                 a.Property(p => p.FirstName)
-//                     .HasColumnName(nameof(User.UserName.FirstName))
-//                     .HasMaxLength(50)
-//                     .IsRequired();
-//             });
-//
-//         modelBuilder.Entity<User>().OwnsOne(x => x.UserName,
-//             a =>
-//             {
-//                 a.Property(p => p.LastName)
-//                     .HasColumnName(nameof(User.UserName.LastName))
-//                     .HasMaxLength(50)
-//                     .IsRequired();
-//             });
-//
-//         modelBuilder.Entity<User>().OwnsOne(x => x.Birthday,
-//             a =>
-//             {
-//                 a.Property(p => p.Date)
-//                     .HasColumnName(nameof(User.Birthday))
-//                     .IsRequired();
-//             });
-//
-//         modelBuilder.Entity<User>()
-//             .HasMany(user => user.Publications)
-//             .WithOne(publication => publication.User);
-//
-//         modelBuilder.Entity<UsersFriends>(entity =>
-//         {
-//             entity.HasKey(source => new { source.UserId, source.UsersFriendId });
-//         });
-//
-//     }
