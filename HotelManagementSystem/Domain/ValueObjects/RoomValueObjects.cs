@@ -51,7 +51,7 @@ public class Capacity
     {
         Value = value;
     }
-    public static Capacity Of(int  value)
+    public static Capacity Of(int value)
     {
         if (value < 0) throw new InvalidCapacityException();
         return new Capacity(value);
@@ -78,49 +78,67 @@ public class RoomPrice
     {
         return roomPrice.Value;
     }
+    // public static decimal GetCoefficientByCategory(string category)
+    // {
+    //     RoomCategories roomCategory;
+    //     decimal coefficient = 1;
+    //
+    //     if (Enum.TryParse(category, out roomCategory))
+    //     {
+    //         switch (roomCategory)
+    //         {
+    //             case RoomCategories.Standard:
+    //                 return 1.1m;
+    //             case RoomCategories.JuniorSuite:
+    //                 return 1.2m;
+    //             case RoomCategories.Deluxe:
+    //                 return 1.3m;
+    //             case RoomCategories.Suite:
+    //                 return 1.4m;
+    //             default:
+    //                 break;
+    //         }
+    //     }
+    //     throw new InvalidRoomCategoryException();
+    // }
     public static decimal GetCoefficientByCategory(string category)
     {
-        RoomCategories roomCategory;
-        decimal coefficient = 1;
-
-        if (Enum.TryParse(category, out roomCategory))
-        {
-            switch (roomCategory)
+        
+            switch (category)
             {
-                case RoomCategories.Standard:
+                case "Standard":
                     return 1.1m;
-                case RoomCategories.JuniorSuite:
+                case "JuniorSuite":
                     return 1.2m;
-                case RoomCategories.Deluxe:
+                case "Deluxe":
                     return 1.3m;
-                case RoomCategories.Suite:
+                case "Suite":
                     return 1.4m;
                 default:
                     break;
             }
-        }
+        
         throw new InvalidRoomCategoryException();
     }
 }
 
 public class RoomCategory
 {
-    public RoomCategories  Value { get; }
+    public string  Value { get; }
 
-    private RoomCategory(RoomCategories  value)
+    private RoomCategory(string  value)
     {
         Value = value;
     }
     public static RoomCategory Of(string  value)
     {
-        try 
-        {
-            var category = (RoomCategories)Enum.Parse(typeof(RoomCategories), value);
-            return new RoomCategory(category);
-        }
-        catch (ArgumentException)
-        {
-            throw new InvalidRoomCategoryException();
-        }
+
+            //var category = (RoomCategories)Enum.Parse(typeof(RoomCategories), value);
+            if(value != "Standard" || value != "JuniorSuite" || value != "Deluxe" || value != "Suite")  throw new InvalidRoomCategoryException();
+            return new RoomCategory(value);
+    }
+    public static implicit operator string (RoomCategory roomCategory)
+    {
+        return roomCategory.Value;
     }
 }

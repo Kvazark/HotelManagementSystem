@@ -1,5 +1,6 @@
 ﻿using HotelManagementSystem.Aggregates;
 using HotelManagementSystem.Data;
+using HotelManagementSystem.Domain.Aggregatеs;
 using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagementSystem.DomainServices;
@@ -31,7 +32,7 @@ public class HotelService : IHotelService
     public async Task<Hotel?> AddRoom(Guid hotelId, string numberRoom, string roomCategory, int capacity, decimal baseRoomPrice)
     {
         var hotel = await _context.Hotels
-            .Include(h => h.Rooms) 
+            // .Include(h => h.Rooms) 
             .FirstOrDefaultAsync(h => h.Id == hotelId);
         
         if (hotel != null)

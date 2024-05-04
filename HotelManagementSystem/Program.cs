@@ -11,7 +11,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<HotelBookingContext>(options =>
 {
     options.UseNpgsql("Host=localhost;Port=5432;Database=HotelBooking;Username=postgres;Password=root",
-        b => b.MigrationsAssembly("HotelBooking"));
+        b => b.MigrationsAssembly("HotelManagementSystem"));
 });
 builder.Services.AddScoped<IBookingService, BookingService>();
 
@@ -31,11 +31,11 @@ app.MapPost("api/addbooking", async (CreateBookingDto createBookingDto,IBookingS
     return Results.Created($"api/addbooking/{newBooking.Id}", newBooking);
 });
 
-app.MapPost("api/getbookingById", async (Guid bookingId, IBookingService bookingService) =>
+app.MapGet("api/getbookingById", async (Guid bookingId, IBookingService bookingService) =>
 {
     var booking = await bookingService.GetBookingById(bookingId);
 
-    // return Results.Created($"api/getbookingbyid/{booking.BookingId}", booking);
+    return Results.Created($"api/getbookingbyid/{bookingId}", booking);
 });
 
 app.Run();

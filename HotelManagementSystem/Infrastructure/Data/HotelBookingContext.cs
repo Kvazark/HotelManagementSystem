@@ -1,4 +1,5 @@
 ﻿using HotelManagementSystem.Aggregates;
+using HotelManagementSystem.Domain.Aggregatеs;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -23,20 +24,17 @@ public class HotelBookingContext  : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        modelBuilder.Entity<Booking>().HasKey(p => p.Id);
         
+        modelBuilder.Entity<Booking>().HasKey(p => p.Id);
         modelBuilder.Entity<Booking>().ToTable(nameof(Booking));
-
-      
-        modelBuilder.Entity<Booking>().Property(r => r.Id).ValueGeneratedNever()
-            .HasConversion<Guid>(bookingId => bookingId.Value, dbId => BookingId.Of(dbId));
+        modelBuilder.Entity<Booking>().Property(r => r.Id).ValueGeneratedNever();
 
         modelBuilder.Entity<Hotel>().HasKey(r => r.Id);
-        modelBuilder.Entity<Hotel>().ToTable(nameof(Booking));
+        modelBuilder.Entity<Hotel>().ToTable(nameof(Hotel));
         modelBuilder.Entity<Hotel>().Property(r => r.Id).ValueGeneratedNever();
         
         modelBuilder.Entity<Room>().HasKey(p => p.Id);
-        modelBuilder.Entity<Room>().ToTable(nameof(Booking));
+        modelBuilder.Entity<Room>().ToTable(nameof(Room));
         modelBuilder.Entity<Room>().Property(r => r.Id).ValueGeneratedNever();
        
         modelBuilder.Entity<Booking>().OwnsOne(x => x.ReservationDates,
@@ -65,28 +63,6 @@ public class HotelBookingContext  : DbContext
                     .IsRequired();
             }
         );
-        
-        modelBuilder.Entity<Booking>().OwnsOne(
-            x => x.HotelId,
-            a =>
-            {
-                a.Property(p => p.Value)
-                    .HasColumnName(nameof(Booking.HotelId))
-                    .IsRequired();
-            }
-        );
-        
-        modelBuilder.Entity<Booking>().HasOne(b => b.HotelId)
-            .WithMany()
-            .HasForeignKey(b => b.HotelId)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Booking>().HasOne(b => b.RoomId)
-            .WithMany()
-            .HasForeignKey(b => b.RoomId)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Booking>().OwnsOne(
             x => x.Discount,
@@ -107,6 +83,8 @@ public class HotelBookingContext  : DbContext
             }
         );
 
+        
+        
         modelBuilder.Entity<Hotel>().OwnsOne(
             x => x.Name,
             a =>
@@ -138,11 +116,23 @@ public class HotelBookingContext  : DbContext
                     .IsRequired();
             }
         );
-        modelBuilder.Entity<Hotel>() .HasMany(h => h.Rooms)
-            .WithOne()
-            .HasForeignKey(r => r.HotelId);
+
+        // modelBuilder.Entity<Hotel>(entity =>
+        // {
+        //     entity
+        //         .HasMany(hotel => hotel.Rooms)
+        //         .WithOne(room => room.Hotel);
+        // });
+        //
         
         
+        modelBuilder.Entity<Room>(entity =>
+        {
+            entity
+                .HasMany(hotel => hotel.Bookings)
+                .WithOne(booking => booking.Room);
+        });
+
         modelBuilder.Entity<Room>()
             .OwnsOne(
                 r => r.NumberRoom,
@@ -186,15 +176,5 @@ public class HotelBookingContext  : DbContext
                         .IsRequired();
                 }
             );
-
-        modelBuilder.Entity<Room>()
-            .Property(r => r.HotelId)
-            .HasColumnName(nameof(Room.HotelId))
-            .IsRequired();
-
-        modelBuilder.Entity<Room>()
-            .HasOne<Hotel>() 
-            .WithMany(h => h.Rooms)
-            .HasForeignKey(r => r.HotelId);
     }
 }
