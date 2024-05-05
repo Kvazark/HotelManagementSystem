@@ -25,11 +25,22 @@ public class Hotel
         };
         return hotel;
     }
+    
+    public static async Task<Hotel> UpdateStarRating(Hotel hotel, double rating)
+    {
+        var newRating = HotelStarRating.Of(rating);
+        if (newRating != null)
+        {
+            hotel.HotelStarRating = newRating;
+        }
+        return hotel;
+    }
+
 
     public static async Task<Hotel> AddHotel(string name, string address)
     {
         var hotel = Hotel.Create(HotelId.Of(Guid.NewGuid()), Name.Of(name),
-            Address.Of(address), HotelStarRating.Of(1));
+            Address.Of(address), HotelStarRating.Of(1.0));
         return hotel;
     }
 

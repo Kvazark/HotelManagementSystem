@@ -29,6 +29,20 @@ public class HotelService : IHotelService
         return await newHotel;
     }
 
+    public async Task<Hotel> updateHotelStarRating(Guid hotelId, double starRating)
+    {
+        var hotel = await _context.Hotels.FindAsync(hotelId);
+
+        if (hotel != null)
+        {
+            var updatedHotel = Hotel.UpdateStarRating(hotel, starRating);
+            _context.Hotels.Update(await updatedHotel);
+            await _context.SaveChangesAsync();
+            return await updatedHotel;
+        }
+        return null;
+    }
+
     public async Task<Hotel?> AddRoom(Guid hotelId, int capacity, string numberRoom, string roomCategory, decimal baseRoomPrice)
     {
         var hotel = await _context.Hotels.FirstOrDefaultAsync(h => h.Id == hotelId);

@@ -17,6 +17,7 @@ builder.Services.AddDbContext<HotelBookingContext>(options =>
 });
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IRoomService, RoomService>();
+builder.Services.AddScoped<IHotelService, HotelService>();
 
 // Add MediatR
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
@@ -77,6 +78,18 @@ app.MapPost("api/addNewRoom", async (CreateRoomDto createRoomDto, IRoomService r
     var newRoom = await roomService.CreateNewRoom(createRoomDto.NumberRoom, 
         createRoomDto.RoomCategory,createRoomDto.Capacity, createRoomDto.BaseRoomPrice, createRoomDto.HotelId);
     return Results.Created($"api/addNewRoom/{newRoom.Id}", newRoom);
+});
+
+app.MapPost("api/addNewHotel", async (CreateHotelDto createHotelDto, IHotelService hotelService) =>
+{
+    var newHotel = await hotelService.CreateHotel(createHotelDto.Name, createHotelDto.Address);
+    return Results.Created($"api/addNewHotel/{newHotel.Id}", newHotel);
+});
+
+app.MapPut("api/updateHotelStarRating", async (HotelRatingDto hotelDto, IHotelService hotelService) =>
+{
+    var updateHotel = await hotelService.updateHotelStarRating(hotelDto.Id, hotelDto.HotelStarRating);
+    return Results.Created($"api/updateHotelStarRating/{hotelDto.Id}", updateHotel);
 });
 
 app.MapGet("api/getbookingById", async (Guid bookingId, IBookingService bookingService) =>
