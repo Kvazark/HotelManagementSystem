@@ -1,6 +1,8 @@
 ﻿using HotelManagementSystem.Aggregates;
 using HotelManagementSystem.Data;
 using HotelManagementSystem.Domain.Aggregatеs;
+using HotelManagementSystem.DTO;
+using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagementSystem.DomainServices;
 
@@ -13,23 +15,26 @@ public class RoomService : IRoomService
         _context = context;
     }
 
-    public async Task<Room> CreateRoom(string numberRoom, string roomCategory, int capacity, decimal baseRoomPrice, Hotel hotel)
+    public async Task<Room> CreateNewRoom(string numberRoom, string roomCategory, int capacity, decimal baseRoomPrice, Guid hotelId)
     {
-        var newRoom = Room.CreateRoom(numberRoom, roomCategory, capacity, baseRoomPrice, hotel);
+        var hotel = await _context.Hotels
+            .Where(h => h.Id == hotelId)
+            .FirstOrDefaultAsync();
 
-        if (newRoom != null)
+        if (hotel != null)
         {
-            _context.Rooms.Add(await newRoom);
-            await _context.SaveChangesAsync();
-        }
+            var newRoom = Room.CreateRoom(numberRoom, roomCategory, capacity, baseRoomPrice, hotel);
+
+            if (newRoom != null)
+            {
+                _context.Rooms.Add(await newRoom);
+                await _context.SaveChangesAsync();
+            }
         
-        return await newRoom;
-    }
+            return await newRoom;
+        }
 
-
-    public Task<Room> CreateRoom(string numberRoom, string roomCategory, int capacity, decimal baseRoomPrice, Guid hotelId)
-    {
-        throw new NotImplementedException();
+        return null;
     }
 
     public Task<Room?> GetRoomById(Guid roomId)

@@ -29,24 +29,23 @@ public class HotelService : IHotelService
         return await newHotel;
     }
 
-    public async Task<Hotel?> AddRoom(Guid hotelId, string numberRoom, string roomCategory, int capacity, decimal baseRoomPrice)
+    public async Task<Hotel?> AddRoom(Guid hotelId, int capacity, string numberRoom, string roomCategory, decimal baseRoomPrice)
     {
-        var hotel = await _context.Hotels
-            // .Include(h => h.Rooms) 
-            .FirstOrDefaultAsync(h => h.Id == hotelId);
+        var hotel = await _context.Hotels.FirstOrDefaultAsync(h => h.Id == hotelId);
         
-        if (hotel != null)
-        {
-            var newRoom = await _roomService.CreateRoom(numberRoom, roomCategory, capacity, baseRoomPrice, hotelId);
-            if (newRoom != null)
-            {
-                await hotel.AddRoom(newRoom, hotel);
-            }
-            _context.Update(hotel);
-            await _context.SaveChangesAsync();
-        }
-        
-        return hotel;
+        // if (hotel != null)
+        // {
+        //     var newRoom = Hotel.AddRoom(capacity, numberRoom, roomCategory, baseRoomPrice, hotel);
+        //     //var newRoom = await _roomService.CreateRoom(numberRoom, roomCategory, capacity, baseRoomPrice, hotelId);
+        //     if (newRoom != null)
+        //     {
+        //         _context.Rooms.Add(await await newRoom);
+        //         await _context.SaveChangesAsync();
+        //     }
+        //     return hotel;
+        // }
+
+        return null;
     }
 
     public async Task<Hotel?> GetHotelById(Guid hotelId)

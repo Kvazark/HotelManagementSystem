@@ -33,10 +33,11 @@ public class Hotel
         return hotel;
     }
 
-    public async Task<Hotel> AddRoom(Room room, Hotel hotel) 
+    public static async Task<Hotel> AddRoom(int capacity, string numberRoom, string roomCategory, decimal baseRoomPrice, Hotel hotel) 
     {
-        // hotel.Rooms ??= new List<Room>(); 
-        // hotel.Rooms.Add(room);
+        // hotel.Rooms ??= new List<Room>();
+        // return Room.CreateRoom(numberRoom, roomCategory, capacity, baseRoomPrice, hotel);
+        // hotel.Rooms.Add(await room);
         return hotel;
     }
 }

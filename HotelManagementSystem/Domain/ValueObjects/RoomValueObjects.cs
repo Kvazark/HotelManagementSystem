@@ -134,7 +134,7 @@ public class RoomCategory
     {
 
             //var category = (RoomCategories)Enum.Parse(typeof(RoomCategories), value);
-            if(value != "Standard" || value != "JuniorSuite" || value != "Deluxe" || value != "Suite")  throw new InvalidRoomCategoryException();
+            if(value != "Standard" && value != "JuniorSuite" && value != "Deluxe" && value != "Suite")  throw new InvalidRoomCategoryException();
             return new RoomCategory(value);
     }
     public static implicit operator string (RoomCategory roomCategory)

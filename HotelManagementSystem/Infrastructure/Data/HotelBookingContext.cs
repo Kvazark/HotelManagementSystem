@@ -126,12 +126,12 @@ public class HotelBookingContext  : DbContext
         //
         
         
-        modelBuilder.Entity<Room>(entity =>
-        {
-            entity
-                .HasMany(hotel => hotel.Bookings)
-                .WithOne(booking => booking.Room);
-        });
+        // modelBuilder.Entity<Room>(entity =>
+        // {
+        //     entity
+        //         .HasMany(hotel => hotel.Bookings)
+        //         .WithOne(booking => booking.Room);
+        // });
 
         modelBuilder.Entity<Room>()
             .OwnsOne(
