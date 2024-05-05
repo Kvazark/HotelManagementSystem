@@ -1,5 +1,9 @@
 ﻿namespace HotelManagementSystem.DTO;
 
+public record BookingRecordDto(DateTime ArrivalDate, DateTime DepartureDate, int NumberOfGuests);
+
+public record BookingConfirmedDto(DateTime ArrivalDate, DateTime DepartureDate, int NumberOfGuests);
+
 public class BookingDto
 {
     public ReservationDatesDto ReservationDates { get; set; }

@@ -1,5 +1,4 @@
-﻿using HotelManagementSystem.Common;
-using HotelManagementSystem.Domain.Aggregatеs;
+﻿using HotelManagementSystem.Domain.Aggregatеs;
 using HotelManagementSystem.Domain.Common;
 
 namespace HotelManagementSystem.Aggregates;

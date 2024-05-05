@@ -1,5 +1,7 @@
 
 using System.Reflection;
+using HotelManagementSystem.Application.Features;
+using HotelManagementSystem.Application.Services;
 using HotelManagementSystem.Data;
 using HotelManagementSystem.DomainServices;
 using HotelManagementSystem.DTO;
@@ -66,11 +68,13 @@ if (app.Environment.IsDevelopment())
 }
 app.MapGet("/", () => "Hello World!");
 
-app.MapPost("api/addbooking", async (CreateBookingDto createBookingDto,IBookingService bookingService) =>
+app.MapPost("api/addbooking", async (CreateBookingDto createBookingDto,IBookingService bookingService, IMediator mediator) =>
 {
-    var newBooking = await bookingService.AddBooking(createBookingDto.ArrivalDate, createBookingDto.DepartureDate, createBookingDto.NumberOfGuests);
+    //var newBooking = await bookingService.AddBooking(createBookingDto.ArrivalDate, createBookingDto.DepartureDate, createBookingDto.NumberOfGuests);
     // await mediator.Send(new AddUserCommand(userDto));
-    return Results.Created($"api/addbooking/{newBooking.Id}", newBooking);
+    var command = new BookingRequestCommand(createBookingDto.ArrivalDate, createBookingDto.DepartureDate, createBookingDto.NumberOfGuests);
+    var response = await mediator.Send(command);
+    return Results.Created($"api/addbooking/{response.booking.Id}", response);
 });
 
 app.MapPost("api/addNewRoom", async (CreateRoomDto createRoomDto, IRoomService roomService) =>

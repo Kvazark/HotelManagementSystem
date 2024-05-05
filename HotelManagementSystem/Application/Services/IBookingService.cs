@@ -1,12 +1,11 @@
 ﻿using HotelManagementSystem.Aggregates;
 using HotelManagementSystem.DTO;
-using Microsoft.VisualBasic;
 
-namespace HotelManagementSystem.DomainServices;
+namespace HotelManagementSystem.Application.Services;
 
 public interface IBookingService
 {
-    public Task<Booking> AddBooking(DateTimeOffset createBookingDto, DateTimeOffset departureDate, int numberOfGuests);
+    public Task<Booking> AddBooking(DateTimeOffset arrivalDate, DateTimeOffset departureDate, int numberOfGuests);
     
     public Task<BookingDto?> GetBookingById(Guid bookingId);
 }

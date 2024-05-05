@@ -1,5 +1,7 @@
 ﻿using HotelManagementSystem.Aggregates;
 using HotelManagementSystem.Domain.Aggregatеs;
+using HotelManagementSystem.Domain.Common;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -12,9 +14,12 @@ public class HotelBookingContext  : DbContext
     public DbSet<Hotel> Hotels { get; set; }
     
     public DbSet<Room> Rooms { get; set; }
+    
+    private IMediator _mediator;
 
-    public HotelBookingContext(DbContextOptions<HotelBookingContext> options) : base(options)
+    public HotelBookingContext(DbContextOptions<HotelBookingContext> options, IMediator mediator) : base(options)
     {
+        _mediator = mediator;
     }
 
     public HotelBookingContext()
@@ -176,5 +181,30 @@ public class HotelBookingContext  : DbContext
                         .IsRequired();
                 }
             );
+    }
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+    {
+        var result = await base.SaveChangesAsync(cancellationToken);
+
+        // Dispatch Domain Events collection.
+        await DispatchEvents(cancellationToken);
+
+        return result;
+    }
+    private async Task DispatchEvents(CancellationToken cancellationToken)
+    {
+        var domainEntities = ChangeTracker
+            .Entries<IAggregate>()
+            .Where(x => x.Entity.GetDomainEvents() != null && x.Entity.GetDomainEvents().Any());
+
+        var domainEvents = domainEntities
+            .SelectMany(x => x.Entity.GetDomainEvents())
+            .ToList();
+
+        domainEntities.ToList()
+            .ForEach(entity => entity.Entity.ClearDomainEvents());
+
+        foreach (var domainEvent in domainEvents)
+            await _mediator.Publish(domainEvent, cancellationToken);
     }
 }

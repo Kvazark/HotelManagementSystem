@@ -1,4 +1,5 @@
 ﻿using HotelManagementSystem.Aggregates;
+using HotelManagementSystem.Application.Services;
 using HotelManagementSystem.Data;
 using HotelManagementSystem.DTO;
 using Microsoft.EntityFrameworkCore;
