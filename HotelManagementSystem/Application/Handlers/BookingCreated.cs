@@ -8,11 +8,12 @@ public class BookingCreateDomainEventHandler : INotificationHandler<BookingCreat
     public BookingCreateDomainEventHandler(){}
     public Task Handle(BookingCreateDomainEvent notification, CancellationToken cancellationToken)
     {
-        Console.WriteLine($"A reservation has been created {DateTime.Now}: " +
-                          $"dates: {notification.Booking.ReservationDates.ArrivalDate}-{notification.Booking.ReservationDates.DepartureDate}, " +
-                          $"number of guest: {notification.Booking.NumberOfGuests}," +
-                          $"hotel: {notification.Booking.Hotel.Name}," +
-                          $"number og room: {notification.Booking.Room.NumberRoom}.");
+        Console.WriteLine($"Booking has been created {DateTime.Now}: " +
+                          $"dates: {notification.Booking.ReservationDates.ArrivalDate.ToString("dd.MM.yyyy")}-{notification.Booking.ReservationDates.DepartureDate.ToString("dd.MM.yyyy")}, " +
+                          $"number of guest: {notification.Booking.NumberOfGuests.Value}, " +
+                          $"hotel: {notification.Booking.Hotel.Name.Value}, " +
+                          $"hotel rating (0-5): {notification.Booking.Hotel.HotelStarRating.Value}, " +
+                          $"number of room: {notification.Booking.Room.NumberRoom.Value}.");
         return Task.CompletedTask;
     }
 }

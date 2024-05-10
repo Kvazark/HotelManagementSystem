@@ -5,7 +5,7 @@ using MediatR;
 
 namespace HotelManagementSystem.Application.Features;
 
-public record SelectRoomCommand(List<Room> rooms, List<Booking> bookings, ReservationDates reservationDates) : IRequest<SelectRoomResult>
+public record SelectRoomCommand(List<Room> rooms, List<Booking> bookings, ReservationDates reservationDates, Hotel hotel) : IRequest<SelectRoomResult>
 {
     
 }
@@ -17,7 +17,12 @@ public record SelectRoomResult(bool IsRoomAvailable, Room room)
 
 public class SelectRoomCommandHandler: IRequestHandler<SelectRoomCommand, SelectRoomResult>
 {
-
+    private readonly ILogger<SelectRoomCommandHandler> _logger;
+    
+    public SelectRoomCommandHandler(ILogger<SelectRoomCommandHandler> logger)
+    {
+        _logger = logger;
+    }
     public async Task<SelectRoomResult> Handle(SelectRoomCommand request, CancellationToken cancellationToken)
     {
         request.rooms.Shuffle();
@@ -41,11 +46,16 @@ public class SelectRoomCommandHandler: IRequestHandler<SelectRoomCommand, Select
 
             if (isRoomAvailable)
             {
-                Console.WriteLine("////////////////Room is selected!!!///////////////////////");
+                Console.WriteLine(room.NumberRoom, request.hotel.Name);
+                _logger.LogInformation("Selected room {RoomNumber} in hotel '{HotelName}' at {HotelAddress}",
+                    room.NumberRoom.Value, request.hotel.Name.Value, request.hotel.Address.Value);
                 return new SelectRoomResult(true,room);
             }
         }
-        Console.WriteLine("////////////////Room is NOT selected!///////////////");
+
+        _logger.LogInformation(
+            "There was no room available at the {hotelName} hotel for the period of time: from {arrivalDate} to {departureDate}",
+            request.hotel.Name, request.reservationDates.ArrivalDate, request.reservationDates.DepartureDate);
         return new SelectRoomResult(false, null);
     }
 }

@@ -61,6 +61,8 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.Get
 //////////////////////////////////
 var app = builder.Build();
 
+builder.Services.AddLogging(e => e.AddConsole());
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

@@ -50,19 +50,17 @@ public class Booking
             {
                 var isAnyRoomAvailable = false;
                 
-                var command = new SelectRoomCommand(rooms, bookings, reservationDates);
-                var selectRoomResult = await mediator.Send(command);
+                var selectRoom = new SelectRoomCommand(rooms, bookings, reservationDates, hotel);
+                var selectRoomResult = await mediator.Send(selectRoom);
                 if (selectRoomResult.room != null)
                 {
                     isAnyRoomAvailable = true;
-                    
-                    double hotelStarRating = hotel.HotelStarRating;
-                    decimal basePrice = selectRoomResult.room.RoomPrice; 
-                    decimal discount = (decimal)(hotelStarRating * 5.0);
-                    decimal bookingPrice = basePrice * (discount / 100);
+
+                    var applyDiscount = new ApplyDiscountCommand(hotel.HotelStarRating, selectRoomResult.room.RoomPrice);
+                    var applyDiscountResult = await mediator.Send(applyDiscount);
                     
                     var booking = Booking.Create(BookingId.Of(Guid.NewGuid()), ReservationDates.Of(arrivalDate, departureDate),
-                        NumberOfGuests.Of(numberOfGuests), hotel, selectRoomResult.room, Discount.Of(discount), BookingPrice.Of(bookingPrice));
+                        NumberOfGuests.Of(numberOfGuests), hotel, selectRoomResult.room, Discount.Of(applyDiscountResult.discount), BookingPrice.Of(applyDiscountResult.bookingPrice));
                     
                     return booking;
                 }

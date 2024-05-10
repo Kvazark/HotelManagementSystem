@@ -7,7 +7,7 @@ namespace HotelManagementSystem.Application.Features;
 
 public record BookingRequestCommand(DateTimeOffset ArrivalDate, DateTimeOffset DepartureDate, int NumberOfGuests) : IRequest<BookingRequestResult>
 {
-    // public Guid Id { get; init; } = Guid.NewGuid();
+    
 }
 
 public record BookingRequestResult(Booking booking);
@@ -15,17 +15,19 @@ public record BookingRequestResult(Booking booking);
 public class BookingRequestCommandHandler: IRequestHandler<BookingRequestCommand, BookingRequestResult>
 {
     private readonly IBookingService _bookingService;
+    private readonly ILogger<BookingRequestCommandHandler> _logger;
 
-    public BookingRequestCommandHandler(IBookingService bookingService)
+    public BookingRequestCommandHandler(IBookingService bookingService, ILogger<BookingRequestCommandHandler> logger)
     {
         _bookingService = bookingService;
+        _logger = logger;
     }
 
     public async Task<BookingRequestResult> Handle(BookingRequestCommand request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("Received booking request for {NumberOfGuests} guests from {ArrivalDate} to {DepartureDate}",
+            request.NumberOfGuests, request.ArrivalDate.ToString("dd.MM.yyyy"), request.DepartureDate.ToString("dd.MM.yyyy"));
         var booking = await _bookingService.AddBooking(request.ArrivalDate, request.DepartureDate, request.NumberOfGuests);
-        // Console.WriteLine("");
-
         return new BookingRequestResult(booking);
     }
 }
