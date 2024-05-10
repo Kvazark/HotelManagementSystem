@@ -1,7 +1,9 @@
 ﻿using HotelManagementSystem.Aggregates;
 using HotelManagementSystem.Application.Services;
 using HotelManagementSystem.Data;
+using HotelManagementSystem.Domain.Events;
 using HotelManagementSystem.DTO;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagementSystem.DomainServices;
@@ -9,10 +11,12 @@ namespace HotelManagementSystem.DomainServices;
 public class BookingService : IBookingService
 {
     private readonly HotelBookingContext _context;
+    private readonly IMediator _mediator;
 
-    public BookingService(HotelBookingContext context)
+    public BookingService(HotelBookingContext context, IMediator mediator)
     {
         _context = context;
+        _mediator = mediator;
     }
 
     public async Task<Booking> AddBooking(DateTimeOffset arrivalDate, DateTimeOffset departureDate, int numberOgGuests)
@@ -26,11 +30,13 @@ public class BookingService : IBookingService
         var bookings = _context.Bookings
             .Where(b => b.ReservationDates.DepartureDate > today)
             .ToList();
-        var newBooking = Booking.AddBooking(hotels, rooms, bookings, arrivalDate.UtcDateTime, departureDate.UtcDateTime, numberOgGuests);
+        var newBooking = Booking.AddBooking(_mediator, hotels, rooms, bookings, arrivalDate.UtcDateTime, departureDate.UtcDateTime, numberOgGuests);
         if (newBooking != null)
         {
-            _context.Bookings.Add(await newBooking);    
+            _context.Bookings.Add(await newBooking);
             await _context.SaveChangesAsync();
+            var bookingCreatedEvent = new BookingCreateDomainEvent(await newBooking);
+            await _mediator.Publish(bookingCreatedEvent);
         }
         return await newBooking;
     }

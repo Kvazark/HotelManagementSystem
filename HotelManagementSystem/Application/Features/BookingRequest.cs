@@ -24,6 +24,7 @@ public class BookingRequestCommandHandler: IRequestHandler<BookingRequestCommand
     public async Task<BookingRequestResult> Handle(BookingRequestCommand request, CancellationToken cancellationToken)
     {
         var booking = await _bookingService.AddBooking(request.ArrivalDate, request.DepartureDate, request.NumberOfGuests);
+        // Console.WriteLine("");
 
         return new BookingRequestResult(booking);
     }

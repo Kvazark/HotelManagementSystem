@@ -1,6 +1,7 @@
 
 using System.Reflection;
 using HotelManagementSystem.Application.Features;
+using HotelManagementSystem.Application.Handlers;
 using HotelManagementSystem.Application.Services;
 using HotelManagementSystem.Data;
 using HotelManagementSystem.DomainServices;
