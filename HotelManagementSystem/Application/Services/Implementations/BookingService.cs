@@ -27,18 +27,23 @@ public class BookingService : IBookingService
             .ToListAsync();
         
         var today = DateTime.UtcNow.Date;
-        var bookings = _context.Bookings
-            .Where(b => b.ReservationDates.DepartureDate > today)
-            .ToList();
-        var newBooking = Booking.AddBooking(_mediator, hotels, rooms, bookings, arrivalDate.UtcDateTime, departureDate.UtcDateTime, numberOgGuests);
-        if (newBooking != null)
+        if (departureDate > today && arrivalDate > today)
         {
-            _context.Bookings.Add(await newBooking);
-            await _context.SaveChangesAsync();
-            var bookingCreatedEvent = new BookingCreateDomainEvent(await newBooking);
-            await _mediator.Publish(bookingCreatedEvent);
+            var bookings = _context.Bookings
+                .Where(b => b.ReservationDates.DepartureDate > today)
+                .ToList();
+            var newBooking = Booking.AddBooking(_mediator, hotels, rooms, bookings, arrivalDate.UtcDateTime, departureDate.UtcDateTime, numberOgGuests);
+            if (newBooking != null)
+            {
+                _context.Bookings.Add(await newBooking);
+                await _context.SaveChangesAsync();
+                var bookingCreatedEvent = new BookingCreateDomainEvent(await newBooking);
+                await _mediator.Publish(bookingCreatedEvent);
+            }
+
+            return await newBooking;
         }
-        return await newBooking;
+        return null;
     }
 
     public async Task<BookingDto?> GetBookingById(Guid bookingId)
@@ -67,5 +72,33 @@ public class BookingService : IBookingService
             })
             .FirstOrDefaultAsync();
         return booking;
+    }
+    
+    public async Task<List<HotelBookingStatsDto>> GetBookingStatsByHotel()
+    {
+        var bookings = _context.Bookings
+            .Include(b => b.Hotel)
+            .Include(b => b.Room)
+            .ToList();
+
+        var hotelBookingStats = bookings
+            .GroupBy(b => b.Hotel)
+            .Select(g => new HotelBookingStatsDto
+            {
+                Hotel = g.Key.Name,
+                TotalBookings = g.Count(),
+                RoomBookingStats = g.GroupBy(b => b.Room.NumberRoom)
+                    .Select(r => new RoomBookingStats
+                    {
+                        RoomNumber = r.Key,
+                        BookingCount = r.Count(),
+                        TotalGuests = r.Sum(b => b.NumberOfGuests)
+                    })
+                    .ToList(),
+                TotalGuests = g.Sum(b => b.NumberOfGuests),
+            })
+            .ToList();
+
+        return hotelBookingStats;
     }
 }

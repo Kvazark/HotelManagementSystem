@@ -18,3 +18,18 @@ public class BookingDto
     public decimal FinalPrice  { get; set; } 
 
 }
+
+public class HotelBookingStatsDto
+{
+    public string Hotel { get; set; }
+    public int TotalBookings { get; set; }
+    public List<RoomBookingStats> RoomBookingStats { get; set; }
+    public int TotalGuests { get; set; }
+}
+
+public class RoomBookingStats
+{
+    public string RoomNumber { get; set; }
+    public int BookingCount { get; set; }
+    public int TotalGuests { get; set; }
+}

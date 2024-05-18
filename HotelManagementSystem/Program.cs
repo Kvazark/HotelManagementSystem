@@ -106,6 +106,26 @@ app.MapGet("api/getbookingById", async (Guid bookingId, IBookingService bookingS
     return Results.Created($"api/getbookingbyid/{bookingId}", booking);
 });
 
+app.MapGet("api/getStatisticsBookings", async (IBookingService bookingService) =>
+{
+    var statistics = await bookingService.GetBookingStatsByHotel();
+
+    foreach (var stats in statistics)
+    {
+        Console.WriteLine($"Отель: {stats.Hotel}");
+        Console.WriteLine($"Всего броней: {stats.TotalBookings}");
+        Console.WriteLine("Статистика по номерам комнат:");
+
+        foreach (var roomStats in stats.RoomBookingStats)
+        {
+            Console.WriteLine($"  Номер комнаты: {roomStats.RoomNumber}, Количество броней: {roomStats.BookingCount}, Всего гостей: {roomStats.TotalGuests}");
+        }
+
+        Console.WriteLine($"Всего гостей: {stats.TotalGuests}");
+        Console.WriteLine();
+    }
+});
+
 // app.MapGet("api/getRoom", async (IMediator mediator)=> await mediator.Send(new GetRoom()));
 
 app.Run();

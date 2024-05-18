@@ -53,7 +53,7 @@ public class Capacity
     }
     public static Capacity Of(int value)
     {
-        if (value < 0) throw new InvalidCapacityException();
+        if (value <= 0) throw new InvalidCapacityException();
         return new Capacity(value);
     }
     public static implicit operator decimal (Capacity capacity)

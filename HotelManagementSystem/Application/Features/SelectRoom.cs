@@ -55,7 +55,8 @@ public class SelectRoomCommandHandler: IRequestHandler<SelectRoomCommand, Select
 
         _logger.LogInformation(
             "There was no room available at the {hotelName} hotel for the period of time: from {arrivalDate} to {departureDate}",
-            request.hotel.Name, request.reservationDates.ArrivalDate, request.reservationDates.DepartureDate);
+            request.hotel.Name.Value, request.reservationDates.ArrivalDate.ToString("dd.MM.yyyy"), request.reservationDates.DepartureDate.ToString("dd.MM.yyyy"));
+        throw new ArgumentOutOfRangeException("Sorry, there are no empty seats...");
         return new SelectRoomResult(false, null);
     }
 }

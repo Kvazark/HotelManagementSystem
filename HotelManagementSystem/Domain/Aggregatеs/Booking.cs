@@ -44,7 +44,7 @@ public class Booking
 
         foreach (var hotel in listHotels)
         {
-            var rooms = listRooms.Where(r => r.Hotel.Id == hotel.Id).ToList();
+            var rooms = listRooms.Where(r => r.Hotel.Id == hotel.Id && r.Capacity == numberOfGuests).ToList();
             
             if (rooms.Any())
             {
@@ -64,7 +64,7 @@ public class Booking
                     
                     return booking;
                 }
-                if (isAnyRoomAvailable)
+                if (!isAnyRoomAvailable)
                 {
                     continue;
                 }
