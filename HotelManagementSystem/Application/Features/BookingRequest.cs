@@ -1,4 +1,6 @@
-﻿using HotelManagementSystem.Aggregates;
+﻿using System.Text.Json;
+using HotelManagementSystem.Aggregates;
+using HotelManagementSystem.Application.EventBus;
 using MediatR;
 using HotelManagementSystem.Application.Services;
 using HotelManagementSystem.DTO;
@@ -16,15 +18,21 @@ public class BookingRequestCommandHandler: IRequestHandler<BookingRequestCommand
 {
     private readonly IBookingService _bookingService;
     private readonly ILogger<BookingRequestCommandHandler> _logger;
+    private readonly KafkaProducerService _kafkaProducerService;
 
-    public BookingRequestCommandHandler(IBookingService bookingService, ILogger<BookingRequestCommandHandler> logger)
+    public BookingRequestCommandHandler(IBookingService bookingService, ILogger<BookingRequestCommandHandler> logger,
+        KafkaProducerService kafkaProducerService)
     {
         _bookingService = bookingService;
         _logger = logger;
+        _kafkaProducerService = kafkaProducerService;
     }
 
     public async Task<BookingRequestResult> Handle(BookingRequestCommand request, CancellationToken cancellationToken)
     {
+        var message = new BookingRecordDto(Guid.NewGuid(), request.ArrivalDate, request.DepartureDate,
+            request.NumberOfGuests);
+        await _kafkaProducerService.ProduceAsync("testBookingRequest", JsonSerializer.Serialize(message));
         _logger.LogInformation("Received booking request for {NumberOfGuests} guests from {ArrivalDate} to {DepartureDate}",
             request.NumberOfGuests, request.ArrivalDate.ToString("dd.MM.yyyy"), request.DepartureDate.ToString("dd.MM.yyyy"));
         var booking = await _bookingService.AddBooking(request.ArrivalDate, request.DepartureDate, request.NumberOfGuests);

@@ -8,6 +8,8 @@ using HotelManagementSystem.DomainServices;
 using HotelManagementSystem.DTO;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Confluent.Kafka;
+using HotelManagementSystem.Application.EventBus;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
@@ -21,44 +23,10 @@ builder.Services.AddDbContext<HotelBookingContext>(options =>
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IRoomService, RoomService>();
 builder.Services.AddScoped<IHotelService, HotelService>();
+builder.Services.AddScoped<KafkaProducerService>();
 
-// Add MediatR
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
-// builder.Services.AddQuartz(q =>
-// {
-//     q.UseMicrosoftDependencyInjectionJobFactory();
-//     // Just use the name of your job that you created in the Jobs folder.
-//     q.AddJob<AddRandomFriendsJob>(AddRandomFriendsJob.Key);
-//
-//     q.AddTrigger(opts => opts
-//         .ForJob(AddRandomFriendsJob.Key)
-//         .WithIdentity("AddRandomFriendsJob-startTrigger")
-//         .WithSimpleSchedule(x => x
-//             .WithIntervalInMinutes(1)
-//             .RepeatForever())
-//         .StartNow()
-//     );
-// });
-// builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
-// //-------------Add Kafka--------------------//
-// var producerConfig = new ProducerConfig
-// {
-//     // BootstrapServers = $"localhost:29092",
-//     // ClientId = "emailApprover-producer"
-// };
-//
-// var consumerConfig = new ConsumerConfig
-// {
-//     // BootstrapServers = $"localhost:29092",
-//     // GroupId = "emailApprover-consumer",
-//     AutoOffsetReset = AutoOffsetReset.Earliest
-// };
-// ////////
-// builder.Services.AddSingleton(new ProducerBuilder<string, string>(producerConfig).Build());
-// builder.Services.AddSingleton(new ConsumerBuilder<string, string>(consumerConfig).Build());
-
-//////////////////////////////////
 var app = builder.Build();
 
 builder.Services.AddLogging(e => e.AddConsole());
@@ -73,8 +41,6 @@ app.MapGet("/", () => "Hello World!");
 
 app.MapPost("api/addbooking", async (CreateBookingDto createBookingDto,IBookingService bookingService, IMediator mediator) =>
 {
-    //var newBooking = await bookingService.AddBooking(createBookingDto.ArrivalDate, createBookingDto.DepartureDate, createBookingDto.NumberOfGuests);
-    // await mediator.Send(new AddUserCommand(userDto));
     var command = new BookingRequestCommand(createBookingDto.ArrivalDate, createBookingDto.DepartureDate, createBookingDto.NumberOfGuests);
     var response = await mediator.Send(command);
     return Results.Created($"api/addbooking/{response.booking.Id}", response);
@@ -125,7 +91,5 @@ app.MapGet("api/getStatisticsBookings", async (IBookingService bookingService) =
         Console.WriteLine();
     }
 });
-
-// app.MapGet("api/getRoom", async (IMediator mediator)=> await mediator.Send(new GetRoom()));
 
 app.Run();
