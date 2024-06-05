@@ -30,9 +30,12 @@ public class BookingRequestCommandHandler: IRequestHandler<BookingRequestCommand
 
     public async Task<BookingRequestResult> Handle(BookingRequestCommand request, CancellationToken cancellationToken)
     {
-        var message = new BookingRecordDto(Guid.NewGuid(), request.ArrivalDate, request.DepartureDate,
-            request.NumberOfGuests);
-        await _kafkaProducerService.ProduceAsync("testBookingRequest", JsonSerializer.Serialize(message));
+        var message = new BookingRecordDto(Guid.NewGuid(),
+            request.ArrivalDate.ToUniversalTime().ToUnixTimeSeconds().ToString(),
+            request.DepartureDate.ToUniversalTime().ToUnixTimeSeconds().ToString(),
+            request.NumberOfGuests.ToString(),
+            new DateTimeOffset(DateTime.UtcNow.Date.ToUniversalTime()).ToUnixTimeSeconds().ToString());
+        await _kafkaProducerService.ProduceAsync("BookingRequest", JsonSerializer.Serialize(message));
         _logger.LogInformation("Received booking request for {NumberOfGuests} guests from {ArrivalDate} to {DepartureDate}",
             request.NumberOfGuests, request.ArrivalDate.ToString("dd.MM.yyyy"), request.DepartureDate.ToString("dd.MM.yyyy"));
         var booking = await _bookingService.AddBooking(request.ArrivalDate, request.DepartureDate, request.NumberOfGuests);

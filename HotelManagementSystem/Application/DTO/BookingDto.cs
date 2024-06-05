@@ -1,9 +1,9 @@
 ﻿namespace HotelManagementSystem.DTO;
 
-public record BookingRecordDto(Guid idEvent, DateTimeOffset ArrivalDate, DateTimeOffset DepartureDate, int NumberOfGuests);
+public record BookingRecordDto(Guid IdEvent, string ArrivalDate, string DepartureDate, string NumberOfGuests, string requestCreated);
 
 public record BookingConfirmedDto(
-    Guid idEvent, DateTime ArrivalDate, DateTime DepartureDate, int NumberOfGuests, 
+    Guid IdEvent, DateTime ArrivalDate, DateTime DepartureDate, int NumberOfGuests, 
     string NameHotel, string NumberOfRoom, string CategoryRoom, decimal FinalPrice);
 
 public class BookingDto
