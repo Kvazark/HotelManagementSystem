@@ -1,6 +1,10 @@
-﻿using HotelManagementSystem.Aggregates;
+﻿using System.Text.Json;
+using HotelManagementSystem.Aggregates;
+using HotelManagementSystem.Application.Handlers;
 using HotelManagementSystem.Domain.Aggregatеs;
 using HotelManagementSystem.Domain.Common;
+using HotelManagementSystem.Domain.Events;
+using HotelManagementSystem.DTO;
 using MediatR;
 
 namespace HotelManagementSystem.Application.Features;
@@ -18,10 +22,12 @@ public record SelectRoomResult(bool IsRoomAvailable, Room room)
 public class SelectRoomCommandHandler: IRequestHandler<SelectRoomCommand, SelectRoomResult>
 {
     private readonly ILogger<SelectRoomCommandHandler> _logger;
+    private readonly IMediator _mediator;
     
-    public SelectRoomCommandHandler(ILogger<SelectRoomCommandHandler> logger)
+    public SelectRoomCommandHandler(ILogger<SelectRoomCommandHandler> logger, IMediator mediator)
     {
         _logger = logger;
+        _mediator = mediator;
     }
     public async Task<SelectRoomResult> Handle(SelectRoomCommand request, CancellationToken cancellationToken)
     {
@@ -46,7 +52,10 @@ public class SelectRoomCommandHandler: IRequestHandler<SelectRoomCommand, Select
 
             if (isRoomAvailable)
             {
-                Console.WriteLine(room.NumberRoom, request.hotel.Name);
+                var bookingCreatedEvent = new RoomSelectedDomainEvent(room);
+                await _mediator.Publish(bookingCreatedEvent);
+
+                Console.WriteLine(bookingCreatedEvent);
                 _logger.LogInformation("Selected room {RoomNumber} in hotel '{HotelName}' at {HotelAddress}",
                     room.NumberRoom.Value, request.hotel.Name.Value, request.hotel.Address.Value);
                 return new SelectRoomResult(true,room);
