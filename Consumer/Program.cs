@@ -17,25 +17,36 @@ class Consumer {
 
         CancellationTokenSource cts = new CancellationTokenSource();
      
-        using (var consumer = new ConsumerBuilder<Ignore, string>(
-                   consumerConfig).Build())
+        while (true)
         {
-            try {
-                consumer.Subscribe(topic);
-                
-                while (true) {
-                    var cr = consumer.Consume(cts.Token);
-                    Console.WriteLine($"Consumed event from topic {topic}: key = {cr.Message.Key} value = {cr.Message.Value}");
+            try
+            {
+                using (var consumer = new ConsumerBuilder<Ignore, string>(consumerConfig).Build())
+                {
+                    consumer.Subscribe(topic);
+
+                    while (true)
+                    {
+                        var cr = consumer.Consume(cts.Token);
+                        Console.WriteLine($"Consumed event from topic {topic}: key = {cr.Message.Key} value = {cr.Message.Value}");
+                    }
                 }
             }
-            catch (ConsumeException e) {
-                Console.WriteLine($"Error occured: {e.Error.Reason}");
+            catch (ConsumeException e)
+            {
+                Console.WriteLine($"Error occurred: {e.Error.Reason}");
+                Console.WriteLine("Retrying in 5 seconds...");
+                Thread.Sleep(5000);
             }
-            catch (OperationCanceledException) {
-                
+            catch (OperationCanceledException)
+            {
+                break;
             }
-            finally{
-                consumer.Close();
+            catch (Exception e)
+            {
+                Console.WriteLine($"Unhandled exception: {e.Message}");
+                Console.WriteLine("Retrying in 5 seconds...");
+                Thread.Sleep(5000);
             }
         }
     }
