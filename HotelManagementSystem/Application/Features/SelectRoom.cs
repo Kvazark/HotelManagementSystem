@@ -52,10 +52,9 @@ public class SelectRoomCommandHandler: IRequestHandler<SelectRoomCommand, Select
 
             if (isRoomAvailable)
             {
-                var bookingCreatedEvent = new RoomSelectedDomainEvent(room);
-                await _mediator.Publish(bookingCreatedEvent);
-
-                Console.WriteLine(bookingCreatedEvent);
+                var roomSelectedEvent = new RoomSelectedDomainEvent(room);
+                await _mediator.Publish(roomSelectedEvent);
+                
                 _logger.LogInformation("Selected room {RoomNumber} in hotel '{HotelName}' at {HotelAddress}",
                     room.NumberRoom.Value, request.hotel.Name.Value, request.hotel.Address.Value);
                 return new SelectRoomResult(true,room);

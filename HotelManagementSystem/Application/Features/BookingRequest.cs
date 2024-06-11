@@ -36,6 +36,7 @@ public class BookingRequestCommandHandler: IRequestHandler<BookingRequestCommand
             request.DepartureDate.ToUniversalTime().ToUnixTimeSeconds().ToString(),
             request.NumberOfGuests.ToString(),
             new DateTimeOffset(DateTime.UtcNow.Date.ToUniversalTime()).ToUnixTimeSeconds().ToString());
+        Console.WriteLine(DateTime.UtcNow.ToString("dd.MM.yyyy"));
         await _kafkaProducerService.ProduceAsync("Booking", JsonSerializer.Serialize(message));
         _logger.LogInformation("Received booking request for {NumberOfGuests} guests from {ArrivalDate} to {DepartureDate}",
             request.NumberOfGuests, request.ArrivalDate.ToString("dd.MM.yyyy"), request.DepartureDate.ToString("dd.MM.yyyy"));
