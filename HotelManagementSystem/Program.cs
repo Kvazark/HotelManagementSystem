@@ -39,9 +39,11 @@ if (app.Environment.IsDevelopment())
 }
 app.MapGet("/", () => "Hello World!");
 
-app.MapPost("api/addbooking", async (CreateBookingDto createBookingDto,IBookingService bookingService, IMediator mediator) =>
+app.MapPost("api/addBooking", async (CreateBookingDto createBookingDto,
+    IBookingService bookingService, IMediator mediator) =>
 {
-    var command = new BookingRequestCommand(createBookingDto.ArrivalDate, createBookingDto.DepartureDate, createBookingDto.NumberOfGuests);
+    var command = new BookingRequestCommand(createBookingDto.ArrivalDate, createBookingDto.DepartureDate, 
+        createBookingDto.NumberOfGuests);
     var response = await mediator.Send(command);
     return Results.Created($"api/addbooking/{response.booking.Id}", response);
 });
