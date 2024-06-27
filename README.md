@@ -1,3 +1,4 @@
-cd .\HotelManagementSystem\ 
-dotnet ef migrations add init 
-dotnet ef database update 
+```
+ cd .\HotelManagementSystem\ 
+ dotnet ef migrations add init 
+ dotnet ef database update 
