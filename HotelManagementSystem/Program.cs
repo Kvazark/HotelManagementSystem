@@ -10,11 +10,20 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Confluent.Kafka;
 using HotelManagementSystem.Application.EventBus;
+using Consul;
+using HotelManagementSystem.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-// Add services to the container.
+
+builder.Services.AddSingleton<IConsulClient, ConsulClient>(p => new ConsulClient(consulConfig =>
+{
+    consulConfig.Address = new Uri("http://localhost:8500");
+}));
+
 builder.Services.AddDbContext<HotelBookingContext>(options =>
 {
     options.UseNpgsql("Host=localhost;Port=5432;Database=HotelBooking;Username=postgres;Password=root",
@@ -26,11 +35,13 @@ builder.Services.AddScoped<IHotelService, HotelService>();
 builder.Services.AddScoped<KafkaProducerService>();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+builder.Services.Configure<ServiceDiscoveryConfig>(builder.Configuration.GetSection("ServiceDiscoveryConfig"));
 
 var app = builder.Build();
 
 builder.Services.AddLogging(e => e.AddConsole());
 
+app.UseConsul();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -77,21 +88,23 @@ app.MapGet("api/getbookingById", async (Guid bookingId, IBookingService bookingS
 app.MapGet("api/getStatisticsBookings", async (IBookingService bookingService) =>
 {
     var statistics = await bookingService.GetBookingStatsByHotel();
-
+    var message = "";
+    
     foreach (var stats in statistics)
     {
-        Console.WriteLine($"Отель: {stats.Hotel}");
-        Console.WriteLine($"Всего броней: {stats.TotalBookings}");
-        Console.WriteLine("Статистика по номерам комнат:");
+        message += $"Отель: {stats.Hotel}\n";
+        message += $"Всего броней: {stats.TotalBookings}\n";
+        message += "Статистика по номерам комнат:\n";
 
         foreach (var roomStats in stats.RoomBookingStats)
         {
-            Console.WriteLine($"  Номер комнаты: {roomStats.RoomNumber}, Количество броней: {roomStats.BookingCount}, Всего гостей: {roomStats.TotalGuests}");
+            message += $"  Номер комнаты: {roomStats.RoomNumber}, Количество броней: {roomStats.BookingCount}, Всего гостей: {roomStats.TotalGuests}\n";
         }
 
-        Console.WriteLine($"Всего гостей: {stats.TotalGuests}");
-        Console.WriteLine();
+        message += $"Всего гостей: {stats.TotalGuests}\n\n";
     }
+    
+    return message;
 });
 
 app.Run();
