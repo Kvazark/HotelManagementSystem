@@ -1,4 +1,4 @@
-docker-compouse up -d
+docker-compose up -d
 
 clickhouse-client --query "CREATE TABLE booking_request (IdEvent UUID, StatusBooking String, ArrivalDate String, DepartureDate String, NumberOfGuests String, EventCreated UInt64) ENGINE = Kafka('broker:19092', 'Booking', 'consumer-group-2', 'JSONEachRow');"
 
