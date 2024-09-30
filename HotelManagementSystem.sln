@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotelManagementSystem", "Ho
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Consumer", "Consumer\Consumer.csproj", "{593EA5A2-9B09-4BDA-8355-78B8654EDAA9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gateway", "Gateway\Gateway.csproj", "{DE2395F7-C7D1-466A-9FE7-1708C83F7A0F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{593EA5A2-9B09-4BDA-8355-78B8654EDAA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{593EA5A2-9B09-4BDA-8355-78B8654EDAA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{593EA5A2-9B09-4BDA-8355-78B8654EDAA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE2395F7-C7D1-466A-9FE7-1708C83F7A0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE2395F7-C7D1-466A-9FE7-1708C83F7A0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE2395F7-C7D1-466A-9FE7-1708C83F7A0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE2395F7-C7D1-466A-9FE7-1708C83F7A0F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

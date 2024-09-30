@@ -1,0 +1,21 @@
+﻿{
+  "Routes": [
+    {
+      "UseServiceDiscovery": true,
+      "ServiceName": "bookingsHotel",
+      "DownstreamPathTemplate": "/getStatisticsBookings",
+      "DownstreamScheme": "https",
+      "UpstreamPathTemplate": "/bookings/",
+      "UpstreamHttpMethod": [ "Get" ]
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:7175",
+    "ServiceDiscoveryProvider": {
+      "Host": "localhost",
+      "Port": 8500,
+      "Type": "PollConsul",
+      "PollingInterval": 100
+    }
+  }
+}

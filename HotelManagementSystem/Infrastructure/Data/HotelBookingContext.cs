@@ -4,8 +4,7 @@ using HotelManagementSystem.Domain.Common;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-
-namespace HotelManagementSystem.Data;
+namespace HotelManagementSystem.Infrastructure.Data;
 
 public class HotelBookingContext  : DbContext
 {
