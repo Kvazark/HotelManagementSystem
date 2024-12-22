@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Consumer", "Consumer\Consum
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gateway", "Gateway\Gateway.csproj", "{DE2395F7-C7D1-466A-9FE7-1708C83F7A0F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aggregator", "Aggregator\Aggregator.csproj", "{8D90BFBE-C763-4ED2-BBDF-BAD5C734AA5E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{DE2395F7-C7D1-466A-9FE7-1708C83F7A0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE2395F7-C7D1-466A-9FE7-1708C83F7A0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE2395F7-C7D1-466A-9FE7-1708C83F7A0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D90BFBE-C763-4ED2-BBDF-BAD5C734AA5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D90BFBE-C763-4ED2-BBDF-BAD5C734AA5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D90BFBE-C763-4ED2-BBDF-BAD5C734AA5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D90BFBE-C763-4ED2-BBDF-BAD5C734AA5E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
