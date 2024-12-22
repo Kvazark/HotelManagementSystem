@@ -2,10 +2,18 @@
   "Routes": [
     {
       "UseServiceDiscovery": true,
-      "ServiceName": "bookingsHotel",
-      "DownstreamPathTemplate": "/getStatisticsBookings",
+      "ServiceName": "booking",
+      "DownstreamPathTemplate": "/api/getStatisticsBookings",
       "DownstreamScheme": "https",
-      "UpstreamPathTemplate": "/bookings/",
+      "UpstreamPathTemplate": "/bookings",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      "UseServiceDiscovery": true,
+      "ServiceName": "aggregator",
+      "DownstreamPathTemplate": "/testAggregator",
+      "DownstreamScheme": "https",
+      "UpstreamPathTemplate": "/aggregator/bks",
       "UpstreamHttpMethod": [ "Get" ]
     }
   ],
